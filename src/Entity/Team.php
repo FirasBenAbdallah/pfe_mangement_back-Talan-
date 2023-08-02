@@ -54,7 +54,7 @@ class Team
         return $this;
     }
 
-    public function getSubject():Subject
+    public function getSubject(): ?Subject
     {
         return $this->subject;
     }

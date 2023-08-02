@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 #[Route('/users')]
 class UserController extends AbstractController
@@ -24,7 +23,7 @@ class UserController extends AbstractController
         return $this->json($users, Response::HTTP_OK);
     }
 
-    #[Route('/', name: 'app_user_new', methods: ['POST'])]
+    #[Route('', name: 'app_user_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         $json = $request->getContent();
@@ -72,7 +71,7 @@ class UserController extends AbstractController
             // Save the changes to the database
             $entityManager->flush();
 
-            return $this->json(['message' => 'User updated successfully'], Response::HTTP_OK);
+            return $this->json(['message' => 'User updated successfully', $user], Response::HTTP_OK);
         }
 
         $errorMessages = [];
