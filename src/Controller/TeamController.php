@@ -44,7 +44,7 @@ class TeamController extends AbstractController
         return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/{id}', name: 'app_team_show', methods: ['GET'])]
+    #[Route('/{nom}', name: 'app_team_show', methods: ['GET'])]
     public function show(Team $team): Response
     {
         return $this->json($team, Response::HTTP_OK);
@@ -77,5 +77,14 @@ class TeamController extends AbstractController
         }
 
         return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/{id}', name: 'app_team_delete', methods: ['DELETE'])]
+    public function delete(Request $request, Team $team, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($team);
+        $entityManager->flush();
+
+        return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

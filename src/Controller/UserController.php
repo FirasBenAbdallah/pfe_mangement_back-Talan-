@@ -44,7 +44,7 @@ class UserController extends AbstractController
         return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
+    #[Route('/{prenom}/{nom}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
         return $this->json($user, Response::HTTP_OK);

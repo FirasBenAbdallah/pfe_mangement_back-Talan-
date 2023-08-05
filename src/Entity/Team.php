@@ -22,7 +22,7 @@ class Team
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'teams')] 
     private ?Subject $subject = null;
 
-    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'team')] 
+    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'team')]
     private $candidates;
 
     public function getId(): ?int
