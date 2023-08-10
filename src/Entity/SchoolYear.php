@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SchoolYearRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SchoolYearRepository::class)]
 class SchoolYear
@@ -14,8 +15,13 @@ class SchoolYear
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $annee = null;
+    /* #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $annee = null; */
+
+    #[ORM\Column]
+    #[Assert\Range(min: 1000, max: 9999)]
+    #[Assert\NotBlank (message:'Année obligatoire')]
+    private ?int $annee = null;
 
     #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'schoolyear')] 
     private $sessions;
@@ -28,12 +34,12 @@ class SchoolYear
         return $this->id;
     }
 
-    public function getAnnee(): ?\DateTimeInterface
+    public function getAnnee(): ?int
     {
         return $this->annee;
     }
 
-    public function setAnnee(\DateTimeInterface $annee): static
+    public function setAnnee(int $annee): static
     {
         $this->annee = $annee;
 

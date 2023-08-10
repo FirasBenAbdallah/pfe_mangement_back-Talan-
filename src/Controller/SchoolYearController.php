@@ -57,9 +57,10 @@ class SchoolYearController extends AbstractController
         $formData = json_decode($json, true);
 
         // Convert the 'datedebut' and 'datefin' strings to DateTime objects
-        $anneeStr = $formData['annee'] ?? $schoolyear->getAnnee();
+        /* $anneeStr = $formData['annee'] ?? $schoolyear->getAnnee();
         $annee = new \DateTime($anneeStr);
-        $schoolyear->setAnnee($annee);
+        $schoolyear->setAnnee($annee); */
+        $schoolyear->setAnnee($formData['annee'] ?? $schoolyear->getAnnee());
 
         // Validate the updated user entity
         $errors = $validator->validate($schoolyear);

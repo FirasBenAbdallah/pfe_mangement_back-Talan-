@@ -47,7 +47,7 @@ class SubjectController extends AbstractController
                 $schoolyear = $entityManager->getRepository(SchoolYear::class)->find($schoolyearId);
 
                 if (!$user) {
-                    return $this->json(['error' => 'Team not found.'], Response::HTTP_NOT_FOUND);
+                    return $this->json(['error' => 'User not found.'], Response::HTTP_NOT_FOUND);
                 }
                 // Assign the user to the subject
                 $subject->setUser($user);

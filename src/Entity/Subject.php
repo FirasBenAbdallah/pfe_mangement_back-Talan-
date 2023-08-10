@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\SubjectRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubjectRepository::class)]
 class Subject
@@ -14,9 +15,11 @@ class Subject
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Libelle obligatoire')]
     private ?string $libelle = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Compétences obligatoire')]
     private ?string $competences = null;
 
     #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'subjects')] 
@@ -57,7 +60,7 @@ class Subject
         return $this;
     }
 
-    public function getSchoolYear():SchoolYear
+    public function getSchoolYear(): ?SchoolYear
     {
         return $this->schoolyear;
     }
@@ -69,7 +72,7 @@ class Subject
         return $this;
     }
 
-    public function getUser():User
+    public function getUser(): ?User
     {
         return $this->user;
     }

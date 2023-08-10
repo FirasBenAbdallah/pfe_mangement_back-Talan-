@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CandidateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
 class Candidate
@@ -15,15 +16,21 @@ class Candidate
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Nom obligatoire')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Prénom obligatoire')]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Email obligatoire')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank (message:'Numéro téléphone obligatoire')]
+    #[Assert\Range(min :10000000,max : 99999999,minMessage :"Numéro téléphone doit contenir 8 chiffres",maxMessage :"Numéro téléphone doit contenir 8 chiffres")]
+
     private ?int $numtel = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

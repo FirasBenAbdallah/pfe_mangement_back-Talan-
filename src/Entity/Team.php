@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TeamRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
 class Team
@@ -14,9 +15,12 @@ class Team
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank (message:'Nom obligatoire')]
     private ?string $nom = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank (message:'Taille obligatoire')]
+    #[Assert\Positive(message:"Taille doit étre positive")]
     private ?int $taille = null;
 
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'teams')] 
