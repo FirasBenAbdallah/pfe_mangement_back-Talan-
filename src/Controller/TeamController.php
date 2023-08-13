@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Team;
 use App\Form\TeamType;
+use App\Entity\Subject;
 use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,12 +28,31 @@ class TeamController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         $json = $request->getContent();
+        $data = json_decode($json, true); // Decode JSON string to an associative array
+
         $team = $serializer->deserialize($json, Team::class, 'json');
         
         $errors = $validator->validate($team);
         if (count($errors) === 0) {
+            // Get the team ID from the JSON data.
+            $subjectId = $data['subject_id'] ?? null;
+
+            if ($subjectId) {
+                // Find the team by its ID
+                $subject = $entityManager->getRepository(Subject::class)->find($subjectId);
+
+                if (!$subject) {
+                    return $this->json(['error' => 'Subject not found.'], Response::HTTP_NOT_FOUND);
+                }
+                // Assign the team to the subject$subject
+                $team->setSubject($subject);
+            } else {
+                $team->setSubject(null);
+            }
+
             $entityManager->persist($team);
             $entityManager->flush();
+
             return $this->json($team, Response::HTTP_CREATED);
         }
 
@@ -60,6 +80,12 @@ class TeamController extends AbstractController
         // Update the user entity with the new data
         $team->setNom($formData['nom'] ?? $team->getNom());
         $team->setTaille($formData['taille'] ?? $team->getTaille());
+
+        // Get the team ID from the request data
+        $subjectId = $formData['subject_id'];
+
+        // Update the candidate's subject
+        $team->setSubject($entityManager->getRepository(Subject::class)->find($subjectId));
 
         // Validate the updated user entity
         $errors = $validator->validate($team);

@@ -15,12 +15,9 @@ class SchoolYear
     #[ORM\Column]
     private ?int $id = null;
 
-    /* #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $annee = null; */
-
-    #[ORM\Column]
+    #[ORM\Column(unique: true)]
     #[Assert\Range(min: 1000, max: 9999)]
-    #[Assert\NotBlank (message:'Année obligatoire')]
+    #[Assert\NotBlank (message:'Year field is required')]
     private ?int $annee = null;
 
     #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'schoolyear')] 

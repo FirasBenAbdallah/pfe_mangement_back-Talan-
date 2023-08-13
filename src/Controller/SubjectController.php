@@ -97,14 +97,19 @@ class SubjectController extends AbstractController
         // Update the user entity with the new data
         $subject->setLibelle($formData['libelle'] ?? $subject->getLibelle());
         $subject->setCompetences($formData['competences'] ?? $subject->getCompetences());
+        $schoolyearId = $formData['schoolyear_id'];
+        $userId = $formData['user_id'];
+
+        // Update the subject's schoolyear
+        $subject->setSchoolYear($entityManager->getRepository(SchoolYear::class)->find($schoolyearId));
+        // Update the subject's user
+        $subject->setUser($entityManager->getRepository(User::class)->find($userId));
 
         // Validate the updated user entity
         $errors = $validator->validate($subject);
-
         if (count($errors) === 0) {
             // Save the changes to the database
             $entityManager->flush();
-
             return $this->json(['message' => 'Subject updated successfully', $subject], Response::HTTP_OK);
         }
 
@@ -112,7 +117,6 @@ class SubjectController extends AbstractController
         foreach ($errors as $error) {
             $errorMessages[] = $error->getMessage();
         }
-
         return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
     }
 

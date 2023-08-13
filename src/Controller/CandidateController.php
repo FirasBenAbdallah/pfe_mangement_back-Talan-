@@ -66,14 +66,12 @@ class CandidateController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_candidate_show', methods: ['GET'])]
-    public function show(Candidate $candidate): Response
-    {
+    public function show(Candidate $candidate): Response{
         return $this->json($candidate, Response::HTTP_OK);
     }
 
     #[Route('/{id}', name: 'app_candidate_edit', methods: ['PATCH'])]
-    public function edit(Request $request, Candidate $candidate, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
-    {
+    public function edit(Request $request, Candidate $candidate, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response{
         // Get the JSON data from the request body
         $json = $request->getContent();
         $formData = json_decode($json, true);

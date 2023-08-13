@@ -15,12 +15,12 @@ class Team
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Nom obligatoire')]
+    #[Assert\NotBlank (message:'Name field is required')]
     private ?string $nom = null;
 
     #[ORM\Column]
-    #[Assert\NotBlank (message:'Taille obligatoire')]
-    #[Assert\Positive(message:"Taille doit étre positive")]
+    #[Assert\NotBlank (message:'Size field is required')]
+    #[Assert\Positive(message:"Size must be positive")]
     private ?int $taille = null;
 
     #[ORM\ManyToOne(targetEntity: Subject::class, inversedBy: 'teams')] 

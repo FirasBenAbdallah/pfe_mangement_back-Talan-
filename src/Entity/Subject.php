@@ -15,11 +15,11 @@ class Subject
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Libelle obligatoire')]
+    #[Assert\NotBlank (message:'Name field is required')]
     private ?string $libelle = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Compétences obligatoire')]
+    #[Assert\NotBlank (message:'Skills field is required')]
     private ?string $competences = null;
 
     #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'subjects')] 

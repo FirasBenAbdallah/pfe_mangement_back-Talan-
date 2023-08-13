@@ -17,25 +17,25 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Nom obligatoire')]
+    #[Assert\NotBlank (message:'Lastname field is required')]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Prénom obligatoire')]
+    #[Assert\NotBlank (message:'Firstname field is required')]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Email obligatoire')]
-    #[Email(message: 'L\'adresse email "{{ value }}" n\'est pas valide.')]
+    #[Assert\NotBlank (message:'Email field is required')]
+    #[Email(message: 'Email address {{ value }} is not valid.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Mot de passe obligatoire')]
-    #[Assert\Length(min :4,max : 8,minMessage :"Mot de passe doit être au moins {{ limit }} characters long",maxMessage : "Mot de passe ne peut pas dépasser {{ limit }} characters")]
+    #[Assert\NotBlank (message:'Password field is required')]
+    #[Assert\Length(min :4,max : 8,minMessage :"Password must be at least {{ limit }} characters long", maxMessage : "Password cannot exceed {{ limit }} characters")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Champ obligatoire')]
+    #[Assert\NotBlank (message:'Role field is required')]
     private ?string $role = null;
 
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'user')] 
