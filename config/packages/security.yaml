@@ -25,6 +25,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+    encoders:
+        App\Entity\User:
+            algorithm: auto # or whatever algorithm you're using
+            cost: 12 # or the appropriate cost
 
 when@test:
     security:

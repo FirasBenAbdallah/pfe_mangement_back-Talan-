@@ -22,9 +22,6 @@ class Evaluation
     #[ORM\ManyToOne(targetEntity: Candidate::class, inversedBy: 'evaluations')] 
     private ?Candidate $candidate = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'evaluations')] 
-    private ?User $user = null;
-
     #[ORM\ManyToOne(targetEntity: EvaluationLine::class, inversedBy: 'evaluations')] 
     private ?EvaluationLine $evaluationline = null;
 
@@ -65,18 +62,6 @@ class Evaluation
     public function setCandidate(?Candidate $candidate): self
     {
         $this->candidate = $candidate;
-
-        return $this;
-    }
-
-    public function getUser():User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }

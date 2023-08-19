@@ -24,7 +24,7 @@ class Candidate
     #[Assert\NotBlank (message:'Firstname field is required')]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(unique:true,length: 255)]
     #[Assert\NotBlank (message:'Email field is required')]
     #[Email(message: 'Email address {{ value }} is not valid.')]
     private ?string $email = null;

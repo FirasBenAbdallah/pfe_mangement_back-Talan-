@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Team as TeamEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,38 @@ class UserRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+    // UserRepository.php or relevant service method
+    public function findEncadrantUsers()
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.role = :role')
+            ->setParameter('role', 'encadrant')
+            ->getQuery()
+            ->getResult();
+    }
+
+    // UserRepository.php or relevant service method
+    public function findEvaluateurUsers()
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.role = :role')
+            ->setParameter('role', 'evaluateur')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findTeamsAssignedToUser(User $user): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('t')
+            ->from('TeamEntity', 't')
+            ->join('t.subject', 'c')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

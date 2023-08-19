@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Team;
+use App\Entity\User;
+use App\Entity\Subject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,37 @@ class TeamRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Team::class);
+    }
+
+    public function findTeamsBySchoolYear(int $schoolYear): array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.subject', 's')
+            ->innerJoin('s.schoolyear', 'sy')
+            ->where('sy.annee = :schoolYear')
+            ->setParameter('schoolYear', $schoolYear)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function isUserAssignedToSubject(User $user, Subject $subject): bool
+    {
+        // Example DQL query (adjust as needed):
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT COUNT(t.id)
+            FROM App\Entity\Team t
+            JOIN t.subject s
+            JOIN s.user u
+            WHERE t.subject = :subject
+            AND u = :user'
+        );
+
+        $query->setParameter('subject', $subject);
+        $query->setParameter('user', $user);
+
+        $result = $query->getSingleScalarResult();
+
+        return $result > 0;
     }
 
 //    /**

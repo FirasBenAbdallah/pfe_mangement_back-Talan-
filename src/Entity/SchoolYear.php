@@ -20,9 +20,6 @@ class SchoolYear
     #[Assert\NotBlank (message:'Year field is required')]
     private ?int $annee = null;
 
-    #[ORM\OneToMany(targetEntity: Session::class, mappedBy: 'schoolyear')] 
-    private $sessions;
-
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'schoolyear')] 
     private $subjects;
 

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[Route('/users')]
 class UserController extends AbstractController
@@ -24,13 +26,25 @@ class UserController extends AbstractController
     }
 
     #[Route('', name: 'app_user_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        $json = $request->getContent();
+        /* $json = $request->getContent();
         $user = $serializer->deserialize($json, User::class, 'json');
         
         $errors = $validator->validate($user);
         if (count($errors) === 0) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->json($user, Response::HTTP_CREATED);
+        } */
+        $json = $request->getContent();
+        $user = $serializer->deserialize($json, User::class, 'json');
+
+        $errors = $validator->validate($user);
+        if (count($errors) === 0) {
+            // Use the new method to set and encrypt the password
+            $user->setPasswordAndEncrypt($user->getPassword());
+
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->json($user, Response::HTTP_CREATED);
@@ -92,7 +106,25 @@ class UserController extends AbstractController
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/login', name: 'app_user_login', methods: ['POST'])]
+
+    #[Route('/encadrants', name: 'app_user_encadrants', methods: ['GET'])]
+    public function getEncadrantUsers(UserRepository $userRepository): Response
+    {
+        $encadrantUsers = $userRepository->findEncadrantUsers();
+        
+        return $this->json($encadrantUsers, Response::HTTP_OK);
+    }
+
+    #[Route('/evaluateurs', name: 'app_user_evaluateurs', methods: ['GET'])]
+    public function getEvaluateurUsers(UserRepository $userRepository): Response
+    {
+        $evaluateurUsers = $userRepository->findEvaluateurUsers();
+        
+        return $this->json($evaluateurUsers, Response::HTTP_OK);
+    }
+
+
+    /* #[Route('/login', name: 'app_user_login', methods: ['POST'])]
     public function login(Request $request, UserRepository $userRepository): Response
     {
         // Get the JSON data from the request body
@@ -110,10 +142,42 @@ class UserController extends AbstractController
 
         // Handle failed login, for example, return an error JSON response
         return $this->json(['error' => 'Invalid email or password.'], Response::HTTP_UNAUTHORIZED);
-    }
+    } */
 
+    
+    #[Route('/login', name: 'app_user_login', methods: ['POST'])]
+    public function login(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository): Response
+    {
+        // Get the JSON data from the request body
+        $json = $request->getContent();
+        $formData = json_decode($json, true);
+    
+        // Find the user by email using Symfony's UserRepository
+        $user = $userRepository->findOneBy(['email' => $formData['email']]);
+    
+        if (!$user instanceof UserInterface) {
+            return $this->json(['error' => 'Invalid email password.'], Response::HTTP_UNAUTHORIZED);
+        }
+    
+        // Use the password encoder to check if the provided password is valid
+        if ($passwordEncoder->isPasswordValid($user, $formData['password'])) {
+            // Handle successful login, for example, return a success JSON response
+            return $this->json(['message' => $user], Response::HTTP_OK);
+        }
+    
+        // Handle failed login, for example, return an error JSON response
+        return $this->json(['error' => 'Invalid email or password.'], Response::HTTP_UNAUTHORIZED);
+    }
+    
+    
     private function isPasswordValid(User $user, string $password): bool
     {
-        return $user->getPassword() === $password;
+        // Hash the provided password using the same hash algorithm and options
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+        // Compare the hashed password with the stored password hash
+        return password_verify($hashedPassword, $user->getPassword());
     }
+        
+
 }

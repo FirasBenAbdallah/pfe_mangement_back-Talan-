@@ -17,14 +17,14 @@ class Session
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
+    #[ORM\Column]
+    private ?bool $statut = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $datedebut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $datefin = null;
-
-    #[ORM\ManyToOne(targetEntity: SchoolYear::class, inversedBy: 'sessions')] 
-    private ?SchoolYear $schoolyear = null;
 
     #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'session')] 
     private $evaluations;
@@ -42,6 +42,18 @@ class Session
     public function setLibelle(string $libelle): static
     {
         $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    public function getStatut(): ?bool
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(bool $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }
@@ -70,15 +82,4 @@ class Session
         return $this;
     }
 
-    public function getSchoolYear():SchoolYear
-    {
-        return $this->schoolyear;
-    }
-
-    public function setSchoolYear(?SchoolYear $schoolyear): self
-    {
-        $this->schoolyear = $schoolyear;
-
-        return $this;
-    }
 }

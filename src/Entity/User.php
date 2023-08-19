@@ -6,10 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,13 +26,14 @@ class User
     #[Assert\NotBlank (message:'Firstname field is required')]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255)]
+
+    #[ORM\Column(unique:true,length: 255)]
     #[Assert\NotBlank (message:'Email field is required')]
     #[Email(message: 'Email address {{ value }} is not valid.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank (message:'Password field is required')]
+    //#[Assert\NotBlank (message:'Password field is required')]
     #[Assert\Length(min :4,max : 8,minMessage :"Password must be at least {{ limit }} characters long", maxMessage : "Password cannot exceed {{ limit }} characters")]
     private ?string $password = null;
 
@@ -43,9 +46,6 @@ class User
 
     #[ORM\OneToMany(targetEntity: EvaluationLine::class, mappedBy: 'user')] 
     private $evaluationlines;
-
-    #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user')] 
-    private $evaluations;
 
     public function getId(): ?int
     {
@@ -100,14 +100,47 @@ class User
         return $this;
     }
 
-    public function getRole(): ?string
+    /* public function getRole(): ?string
     {
         return $this->role;
+    } */
+    // Implement the getRoles() method
+    public function getRoles(): array
+    {
+        return [$this->role];
     }
-
+    
     public function setRole(string $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+    // Implement the getUsername() method (usually email is used as the username)
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
+    
+    // Implement the getSalt() method (you can return null if not using plaintext passwords)
+    public function getSalt(): ?string
+    {
+        // Return null if you're using a modern hashing algorithm like bcrypt
+        return null;
+    }
+
+    // Implement the eraseCredentials() method (usually not needed for most cases)
+    public function eraseCredentials()
+    {
+        // The plaintext password (if any) should not be persisted
+        $this->plainPassword = null;
+    }
+
+
+    // Add a method to set and encrypt the password
+    public function setPasswordAndEncrypt(string $password): self
+    {
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
 
         return $this;
     }
