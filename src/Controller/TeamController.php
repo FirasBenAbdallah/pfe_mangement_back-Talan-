@@ -74,8 +74,7 @@ class TeamController extends AbstractController
     public function edit(Request $request, Team $team, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
 
         // Update the user entity with the new data
         $team->setNom($formData['nom'] ?? $team->getNom());

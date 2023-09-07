@@ -28,17 +28,7 @@ class UserController extends AbstractController
     #[Route('', name: 'app_user_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordEncoderInterface $passwordEncoder): Response
     {
-        /* $json = $request->getContent();
-        $user = $serializer->deserialize($json, User::class, 'json');
-        
-        $errors = $validator->validate($user);
-        if (count($errors) === 0) {
-            $entityManager->persist($user);
-            $entityManager->flush();
-            return $this->json($user, Response::HTTP_CREATED);
-        } */
-        $json = $request->getContent();
-        $user = $serializer->deserialize($json, User::class, 'json');
+        $user = $serializer->deserialize($request->getContent(), User::class, 'json');
 
         $errors = $validator->validate($user);
         if (count($errors) === 0) {
@@ -68,14 +58,13 @@ class UserController extends AbstractController
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
 
         // Update the user entity with the new data
         $user->setNom($formData['nom'] ?? $user->getNom());
         $user->setPrenom($formData['prenom'] ?? $user->getPrenom());
         $user->setEmail($formData['email'] ?? $user->getEmail());
-        $user->setPassword($formData['password'] ?? $user->getPassword());
+        // $user->setPassword($formData['password'] ?? $user->getPassword());
         $user->setRole($formData['role'] ?? $user->getRole());
 
         // Validate the updated user entity
@@ -123,34 +112,12 @@ class UserController extends AbstractController
         return $this->json($evaluateurUsers, Response::HTTP_OK);
     }
 
-
-    /* #[Route('/login', name: 'app_user_login', methods: ['POST'])]
-    public function login(Request $request, UserRepository $userRepository): Response
-    {
-        // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
-
-        // Find the user by email using Symfony's UserRepository
-        $user = $userRepository->findOneBy(['email' => $formData['email']]);
-
-        // If the user exists and the password matches
-        if ($user instanceof User && $this->isPasswordValid($user, $formData['password'])) {
-            // Handle successful login, for example, return a success JSON response
-            return $this->json(['message' => $user], Response::HTTP_OK);
-        }
-
-        // Handle failed login, for example, return an error JSON response
-        return $this->json(['error' => 'Invalid email or password.'], Response::HTTP_UNAUTHORIZED);
-    } */
-
     
     #[Route('/login', name: 'app_user_login', methods: ['POST'])]
     public function login(Request $request, UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository): Response
     {
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
     
         // Find the user by email using Symfony's UserRepository
         $user = $userRepository->findOneBy(['email' => $formData['email']]);

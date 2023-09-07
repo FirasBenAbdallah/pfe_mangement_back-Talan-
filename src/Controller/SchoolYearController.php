@@ -25,8 +25,7 @@ class SchoolYearController extends AbstractController
     #[Route('', name: 'app_school_year_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
-        $json = $request->getContent();
-        $schoolyear = $serializer->deserialize($json, SchoolYear::class, 'json');
+        $schoolyear = $serializer->deserialize($request->getContent(), SchoolYear::class, 'json');
         
         $errors = $validator->validate($schoolyear);
         if (count($errors) === 0) {
@@ -53,13 +52,9 @@ class SchoolYearController extends AbstractController
     public function edit(Request $request, SchoolYear $schoolyear, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
 
         // Convert the 'datedebut' and 'datefin' strings to DateTime objects
-        /* $anneeStr = $formData['annee'] ?? $schoolyear->getAnnee();
-        $annee = new \DateTime($anneeStr);
-        $schoolyear->setAnnee($annee); */
         $schoolyear->setAnnee($formData['annee'] ?? $schoolyear->getAnnee());
 
         // Validate the updated user entity
@@ -68,7 +63,6 @@ class SchoolYearController extends AbstractController
         if (count($errors) === 0) {
             // Save the changes to the database
             $entityManager->flush();
-
             return $this->json(['message' => 'School year updated successfully', $schoolyear], Response::HTTP_OK);
         }
 
@@ -85,7 +79,6 @@ class SchoolYearController extends AbstractController
     {
         $entityManager->remove($schoolyear);
         $entityManager->flush();
-
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
 }

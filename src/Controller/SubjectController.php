@@ -23,7 +23,6 @@ class SubjectController extends AbstractController
     {
         $subjects = $subjectRepository->findAll();
         return $this->json($subjects, Response::HTTP_OK);
-
     }
 
     #[Route('', name: 'app_subject_new', methods: ['POST'])]
@@ -91,8 +90,7 @@ class SubjectController extends AbstractController
     public function edit(Request $request, Subject $subject, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response
     {
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
 
         // Update the user entity with the new data
         $subject->setLibelle($formData['libelle'] ?? $subject->getLibelle());

@@ -21,6 +21,16 @@ class EvaluationLineRepository extends ServiceEntityRepository
         parent::__construct($registry, EvaluationLine::class);
     }
 
+    // Custom method to calculate the average note
+    public function calculateAverageNoteForEvaluation(int $evaluationId): ?float
+    {
+        return $this->createQueryBuilder('el')
+            ->select('AVG((el.note1 + el.note2 + el.note3 + el.note4) / 4) as average_note')
+            ->andWhere('el.evaluation = :evaluationId')
+            ->setParameter('evaluationId', $evaluationId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 //    /**
 //     * @return EvaluationLine[] Returns an array of EvaluationLine objects
 //     */

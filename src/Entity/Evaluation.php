@@ -22,8 +22,8 @@ class Evaluation
     #[ORM\ManyToOne(targetEntity: Candidate::class, inversedBy: 'evaluations')] 
     private ?Candidate $candidate = null;
 
-    #[ORM\ManyToOne(targetEntity: EvaluationLine::class, inversedBy: 'evaluations')] 
-    private ?EvaluationLine $evaluationline = null;
+    #[ORM\OneToMany(targetEntity: EvaluationLine::class, mappedBy: 'evaluation')] 
+    private $evaluationlines;
 
     public function getId(): ?int
     {
@@ -66,17 +66,7 @@ class Evaluation
         return $this;
     }
 
-    public function getEvaluationLine(): ?EvaluationLine
-    {
-        return $this->evaluationline;
-    }
-
-    public function setEvaluationLine(?EvaluationLine $evaluationline): self
-    {
-        $this->evaluationline = $evaluationline;
-
-        return $this;
-    }
+    
 
 
 }

@@ -34,7 +34,7 @@ class User implements UserInterface
 
     #[ORM\Column(length: 255)]
     //#[Assert\NotBlank (message:'Password field is required')]
-    #[Assert\Length(min :4,max : 8,minMessage :"Password must be at least {{ limit }} characters long", maxMessage : "Password cannot exceed {{ limit }} characters")]
+    #[Assert\Length(min :4,minMessage :"Password must be at least {{ limit }} characters long")]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]

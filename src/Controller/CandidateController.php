@@ -23,7 +23,6 @@ class CandidateController extends AbstractController
     {
         $candidates = $candidateRepository->findAll();
         return $this->json($candidates, Response::HTTP_OK);
-
     }
 
     #[Route('', name: 'app_candidate_new', methods: ['POST'])]
@@ -73,8 +72,7 @@ class CandidateController extends AbstractController
     #[Route('/{id}', name: 'app_candidate_edit', methods: ['PATCH'])]
     public function edit(Request $request, Candidate $candidate, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator): Response{
         // Get the JSON data from the request body
-        $json = $request->getContent();
-        $formData = json_decode($json, true);
+        $formData = json_decode($request->getContent(), true);
 
         // Update the user entity with the new data
         $candidate->setNom($formData['nom'] ?? $candidate->getNom());
@@ -110,7 +108,6 @@ class CandidateController extends AbstractController
         }
         return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
     }
-
 
     #[Route('/{id}', name: 'app_candidate_delete', methods: ['DELETE'])]
     public function delete(Request $request, Candidate $candidate, EntityManagerInterface $entityManager): Response
